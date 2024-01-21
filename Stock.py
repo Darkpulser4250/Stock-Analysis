@@ -1,18 +1,10 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 #Descrip: Program uses LTSM long short term memory
 # to predict the closing stock price of a company
 #past 60 day stock price
 
 
-# In[2]:
 
-
-#Import Directories
+#Import Directories 
 import math
 import pandas_datareader as web
 import numpy as np
@@ -24,8 +16,6 @@ import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
 
 
-# In[3]:
-
 
 #get the stock quote
 df = web.DataReader('LUV',data_source='yahoo',start='2012-01-01',end='2020-08-15')
@@ -34,14 +24,10 @@ df = web.DataReader('LUV',data_source='yahoo',start='2012-01-01',end='2020-08-15
 print(df)
 
 
-# In[4]:
-
-
 #get number of rows and colums in data set
 df.shape
 
 
-# In[5]:
 
 
 #Visualize he closing price history
@@ -54,7 +40,6 @@ plt.show()
 max_price = max(df['Close'])
 
 
-# In[6]:
 
 
 #Create a new data frame with only close column
@@ -67,8 +52,6 @@ training_data_len = math.ceil(len(dataset)*.8)
 training_data_len
 
 
-# In[7]:
-
 
 #Scale the data
 scaler = MinMaxScaler(feature_range=(0,1))
@@ -77,7 +60,6 @@ scaled_data = scaler.fit_transform(dataset)
 scaled_data
 
 
-# In[8]:
 
 
 #Create The training Data Set
@@ -97,14 +79,10 @@ for i in range(60,len(train_data)):
         print()
 
 
-# In[9]:
-
-
 #convert the x_train and y_train to numpy arrrays
 x_train, y_train = np.array(x_train), np.array(y_train)
 
 
-# In[10]:
 
 
 #Reshape the x_train data: LSTM expects 3d data #~samples #~timesteps #~features
@@ -112,7 +90,6 @@ x_train = np.reshape(x_train,(x_train.shape[0], x_train.shape[1], 1))
 x_train
 
 
-# In[11]:
 
 
 #Build the LTSM model 
@@ -123,21 +100,17 @@ model.add(Dense(25))
 model.add(Dense(1))
 
 
-# In[12]:
-
 
 #compil the model
 model.compile(optimizer='adam', loss='mean_squared_error')
 
 
-# In[23]:
 
 
 #Train the model
 model.fit(x_train, y_train, batch_size=1, epochs=1)
 
 
-# In[24]:
 
 
 #Test Dataset
@@ -151,20 +124,16 @@ for i in range(60, len(test_data)):
     x_test.append(test_data[i-60:i,0])
 
 
-# In[25]:
-
 
 #Convert Data to numpy array
 x_test = np.array(x_test)
 
 
-# In[26]:
 
 
 x_test = np.reshape(x_test,(x_test.shape[0],x_test.shape[1],1))
 
 
-# In[27]:
 
 
 #Get the models predicted price values 
@@ -172,7 +141,6 @@ predictions = model.predict(x_test)
 predictions = scaler.inverse_transform(predictions)
 
 
-# In[28]:
 
 
 #Get the root mean squarred error (RMSE) (response lower the better)
@@ -180,7 +148,6 @@ rmse = np.sqrt(np.mean(predictions - y_test)**2)
 rmse
 
 
-# In[29]:
 
 
 #plot the data
@@ -199,7 +166,6 @@ plt.legend(['Train','Val','Predictions'],loc='lower right')
 plt.show()
 
 
-# In[30]:
 
 
 #Get the quote
@@ -225,9 +191,6 @@ prid_price = model.predict(X_test)
 #undo scale
 pred_price = scaler.inverse_transform(prid_price)
 print(pred_price-1)
-
-
-# In[31]:
 
 
 lUV_quote2 = web.DataReader('LUV',data_source='yahoo',start='2020-08-14',end='2020-08-14')
